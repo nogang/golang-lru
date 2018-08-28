@@ -10,15 +10,18 @@ import (
 
 var sw sync.WaitGroup
 
-const goroutineNum = 4000
 const shardsNum = 65536
 const allwork = 10000000
-const workpergoroutine = allwork/goroutineNum
 const cacheSize = allwork * 3
 
 func main(){
 	//lruShardTest()
-	lruTest()
+	lruTest(1)
+	lruTest(2000)
+	lruTest(4000)
+
+
+
 	shardCountTest(1)
 	shardCountTest(2000)
 	shardCountTest(4000)
@@ -45,38 +48,38 @@ func shardCountTest(gonum int) {
 	}
 }
 
-func lruTest() {
+func lruTest(gonum int) {
 	lru, _ := lru.NewWithEvict(cacheSize, nil)
-	lruAddTest("lruBaseTest",lru)
-	lruGetTest("lruBaseTest",lru)
+	lruAddTest("lruBaseTest",lru, gonum)
+	lruGetTest("lruBaseTest",lru, gonum)
 }
 
 
-func lruAddTest(testName string,lru *lru.Cache) {
+func lruAddTest(testName string,lru *lru.Cache, gonum int) {
 	start := time.Now()
-	sw.Add(goroutineNum)
-	for i := 0 ; i < goroutineNum; i++ {
-		go lruAddWork(lru, i)
+	sw.Add(gonum)
+	for i := 0 ; i < gonum; i++ {
+		go lruAddWork(lru, gonum)
 	}
 	sw.Wait()
 	duration := time.Since(start)
-	printResult(testName+"AddNoShard",0,goroutineNum,int(duration/allwork))
+	printResult(testName+"AddNoShard",0,gonum,int(duration/allwork))
 }
 
-func lruGetTest(testName string, lru *lru.Cache) {
-	sw.Add(goroutineNum)
+func lruGetTest(testName string, lru *lru.Cache, gonum int) {
+	sw.Add(gonum)
 	start := time.Now()
-	for i := 0 ; i < goroutineNum; i++ {
-		go lruGetWork(lru, i)
+	for i := 0 ; i < gonum; i++ {
+		go lruGetWork(lru, gonum)
 	}
 	sw.Wait()
 	duration := time.Since(start)
-	printResult(testName+"GetNoShard",0,goroutineNum,int(duration/allwork))
+	printResult(testName+"GetNoShard",0,gonum,int(duration/allwork))
 }
 
 func lruAddWork(lru *lru.Cache,goNum int) {
 	defer sw.Done()
-	for i := 0 ; i < workpergoroutine ; i++ {
+	for i := 0 ; i < allwork/goNum ; i++ {
 		ev := lru.Add(getKey(goNum, i), getValue())
 		if ev {
 			println("add Error")
@@ -86,7 +89,7 @@ func lruAddWork(lru *lru.Cache,goNum int) {
 
 func lruGetWork(lru *lru.Cache, goNum int) {
 	defer sw.Done()
-	for i := 0 ; i < workpergoroutine ; i++ {
+	for i := 0 ; i < allwork/goNum ; i++ {
 		_, ok := lru.Get(getKey(goNum, i))
 		if !ok {
 			println("get Error")
@@ -104,7 +107,7 @@ func lruShardAddTest(testName string, lru *LRUShard, grNum int) {
 	start := time.Now()
 	sw.Add(grNum)
 	for i := 0 ; i < grNum; i++ {
-		go lruShardAddWork(lru, i)
+		go lruShardAddWork(lru, grNum)
 	}
 	sw.Wait()
 	duration := time.Since(start)
@@ -115,7 +118,7 @@ func lruShardGetTest(testName string, lru *LRUShard, grNum int) {
 	sw.Add(grNum)
 	start := time.Now()
 	for i := 0 ; i < grNum; i++ {
-		go lruShardGetWork(lru, i)
+		go lruShardGetWork(lru, grNum)
 	}
 	sw.Wait()
 	duration := time.Since(start)
@@ -124,7 +127,7 @@ func lruShardGetTest(testName string, lru *LRUShard, grNum int) {
 
 func lruShardAddWork(shardLRU *LRUShard, goNum int) {
 	defer sw.Done()
-	for i := 0 ; i < workpergoroutine ; i++ {
+	for i := 0 ; i < allwork/goNum ; i++ {
 		backupKey := getKey(goNum, i)
 		ev := shardLRU.Add(backupKey, getValue())
 		if ev {
@@ -135,7 +138,7 @@ func lruShardAddWork(shardLRU *LRUShard, goNum int) {
 
 func lruShardGetWork(shardLRU *LRUShard, goNum int) {
 	defer sw.Done()
-	for i := 0 ; i < workpergoroutine ; i++ {
+	for i := 0 ; i < allwork/goNum ; i++ {
 		_, ok := shardLRU.Get(getKey(goNum, i))
 		if !ok {
 			println("get Error")
@@ -161,9 +164,9 @@ func (s *LRUShard) Get(key interface{}) (interface{},bool) {
 func (s *LRUShard) getShardIndex(key interface{}) int {
 	switch k := key.(type) {
 	case common.Hash:
-		return ((int(k[3]) << 24) + (int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) % s.shardCount
+		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) % s.shardCount
 	case common.Address:
-		return ((int(k[3]) << 24) + (int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) % s.shardCount
+		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) % s.shardCount
 	default:
 		return 0
 	}
@@ -180,7 +183,7 @@ func InitLruShard(shardCount int, shardSize int) *LRUShard {
 
 func getKey(goNum, i int) common.Hash {
 	var key common.Hash
-	mixNum := goNum * 7717 + i * 5009
+	mixNum := goNum * 5009 + i * 7717
 	for i := 0; i < common.HashLength; i++ {
 		key[i] = byte(mixNum & 0xff)
 		mixNum >>= 8
