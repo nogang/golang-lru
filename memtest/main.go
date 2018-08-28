@@ -6,28 +6,53 @@ import (
 				"time"
 	"github.com/ground-x/go-gxplatform/common"
 	"sync"
-)
+		)
 
 var sw sync.WaitGroup
 
-const goroutineNum = 1000
-const shardsNum = 512
+const goroutineNum = 4000
+const shardsNum = 65536
 const allwork = 10000000
 const workpergoroutine = allwork/goroutineNum
-const cacheSize = allwork * 4
+const cacheSize = allwork * 3
 
 func main(){
-	lruShardTest()
+	//lruShardTest()
 	lruTest()
+	shardCountTest(1)
+	shardCountTest(2000)
+	shardCountTest(4000)
+}
+
+func parallelTest() {
+
+}
+
+func cachSizeTest() {
+
+}
+
+func dataSizeTest() {
+
+}
+
+func shardCountTest(gonum int) {
+	testName := "shardCountTest"
+	for s := 1 ; s <= 65536 ; s *= 4 {
+		lruShard := InitLruShard(s, cacheSize/s)
+		lruShardAddTest(testName, lruShard, gonum)
+		lruShardGetTest(testName, lruShard, gonum)
+	}
 }
 
 func lruTest() {
 	lru, _ := lru.NewWithEvict(cacheSize, nil)
-	lruAddTest(lru)
-	lruGetTest(lru)
+	lruAddTest("lruBaseTest",lru)
+	lruGetTest("lruBaseTest",lru)
 }
 
-func lruAddTest(lru *lru.Cache) {
+
+func lruAddTest(testName string,lru *lru.Cache) {
 	start := time.Now()
 	sw.Add(goroutineNum)
 	for i := 0 ; i < goroutineNum; i++ {
@@ -35,10 +60,10 @@ func lruAddTest(lru *lru.Cache) {
 	}
 	sw.Wait()
 	duration := time.Since(start)
-	fmt.Println("LRU Add Time : ",duration/allwork)
+	printResult(testName+"AddNoShard",0,goroutineNum,int(duration/allwork))
 }
 
-func lruGetTest(lru *lru.Cache) {
+func lruGetTest(testName string, lru *lru.Cache) {
 	sw.Add(goroutineNum)
 	start := time.Now()
 	for i := 0 ; i < goroutineNum; i++ {
@@ -46,7 +71,7 @@ func lruGetTest(lru *lru.Cache) {
 	}
 	sw.Wait()
 	duration := time.Since(start)
-	fmt.Println("LRU Get Time : ",duration/allwork)
+	printResult(testName+"GetNoShard",0,goroutineNum,int(duration/allwork))
 }
 
 func lruAddWork(lru *lru.Cache,goNum int) {
@@ -68,39 +93,40 @@ func lruGetWork(lru *lru.Cache, goNum int) {
 		}
 	}
 }
-
+/*
 func lruShardTest() {
 	lruShard := InitLruShard(shardsNum, cacheSize/shardsNum)
 	lruShardAddTest(lruShard)
 	lruShardGetTest(lruShard)
 }
-
-func lruShardAddTest(lru *LRUShard) {
+*/
+func lruShardAddTest(testName string, lru *LRUShard, grNum int) {
 	start := time.Now()
-	sw.Add(goroutineNum)
-	for i := 0 ; i < goroutineNum; i++ {
+	sw.Add(grNum)
+	for i := 0 ; i < grNum; i++ {
 		go lruShardAddWork(lru, i)
 	}
 	sw.Wait()
 	duration := time.Since(start)
-	fmt.Println("shard LRU Add Time : ",duration/allwork)
+	printResult(testName+"AddShard",lru.shardCount,grNum,int(duration/allwork))
 }
 
-func lruShardGetTest(lru *LRUShard) {
-	sw.Add(goroutineNum)
+func lruShardGetTest(testName string, lru *LRUShard, grNum int) {
+	sw.Add(grNum)
 	start := time.Now()
-	for i := 0 ; i < goroutineNum; i++ {
+	for i := 0 ; i < grNum; i++ {
 		go lruShardGetWork(lru, i)
 	}
 	sw.Wait()
 	duration := time.Since(start)
-	fmt.Println("shard LRU Get Time : ",duration/allwork)
+	printResult(testName+"GetShard",lru.shardCount,grNum,int(duration/allwork))
 }
 
 func lruShardAddWork(shardLRU *LRUShard, goNum int) {
 	defer sw.Done()
 	for i := 0 ; i < workpergoroutine ; i++ {
-		ev := shardLRU.Add(getKey(goNum, i), getValue())
+		backupKey := getKey(goNum, i)
+		ev := shardLRU.Add(backupKey, getValue())
 		if ev {
 			println("add Error")
 		}
@@ -135,9 +161,9 @@ func (s *LRUShard) Get(key interface{}) (interface{},bool) {
 func (s *LRUShard) getShardIndex(key interface{}) int {
 	switch k := key.(type) {
 	case common.Hash:
-		return int((k[3] << 24) + (k[2] << 16) + (k[1] << 8) + k[0]) % s.shardCount
+		return ((int(k[3]) << 24) + (int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) % s.shardCount
 	case common.Address:
-		return int((k[3] << 24) + (k[2] << 16) + (k[1] << 8) + k[0]) % s.shardCount
+		return ((int(k[3]) << 24) + (int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) % s.shardCount
 	default:
 		return 0
 	}
@@ -171,7 +197,9 @@ func getValue() []byte {
 	return data
 }
 
-
+func printResult(testName string, shardNum, goroutine, time int) {
+	fmt.Println(testName, "Shards", shardNum, "Goroutine", goroutine, "Time", time)
+}
 /*
 runtime.MemProfileRate=1
 
