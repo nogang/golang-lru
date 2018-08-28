@@ -164,9 +164,9 @@ func (s *LRUShard) Get(key interface{}) (interface{},bool) {
 func (s *LRUShard) getShardIndex(key interface{}) int {
 	switch k := key.(type) {
 	case common.Hash:
-		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) % s.shardCount
+		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) & (s.shardCount - 1)
 	case common.Address:
-		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) % s.shardCount
+		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) & (s.shardCount - 1)
 	default:
 		return 0
 	}
@@ -174,6 +174,12 @@ func (s *LRUShard) getShardIndex(key interface{}) int {
 
 //if key is not common.Hash nor common.Address then you should set numShard 1
 func InitLruShard(shardCount int, shardSize int) *LRUShard {
+	preShardCount := shardCount
+	for shardCount > 0 {
+		preShardCount = shardCount
+		shardCount = shardCount & (shardCount - 1)
+	}
+	shardCount = preShardCount
 	lruShard := &LRUShard{shards : make([]*lru.Cache,shardCount), shardCount:shardCount}
 	for i := 0 ; i < shardCount ; i++ {
 		lruShard.shards[i], _ = lru.NewWithEvict(shardSize, nil)
