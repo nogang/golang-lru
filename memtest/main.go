@@ -42,7 +42,7 @@ func dataSizeTest() {
 func shardCountTest(gonum int) {
 	testName := "shardCountTest"
 	for s := 1 ; s <= 65536 ; s *= 4 {
-		lruShard := InitLruShard(s, cacheSize/s)
+		lruShard := InitLruShard(s - 1, cacheSize/(s-1))
 		lruShardAddTest(testName, lruShard, gonum)
 		lruShardGetTest(testName, lruShard, gonum)
 	}
@@ -164,9 +164,9 @@ func (s *LRUShard) Get(key interface{}) (interface{},bool) {
 func (s *LRUShard) getShardIndex(key interface{}) int {
 	switch k := key.(type) {
 	case common.Hash:
-		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) & (s.shardCount - 1)
+		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) % s.shardCount
 	case common.Address:
-		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) & (s.shardCount - 1)
+		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) % s.shardCount
 	default:
 		return 0
 	}
