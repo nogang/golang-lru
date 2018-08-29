@@ -174,12 +174,6 @@ func (s *LRUShard) getShardIndex(key interface{}) int {
 
 //if key is not common.Hash nor common.Address then you should set numShard 1
 func InitLruShard(shardCount int, shardSize int) *LRUShard {
-	preShardCount := shardCount
-	for shardCount > 0 {
-		preShardCount = shardCount
-		shardCount = shardCount & (shardCount - 1)
-	}
-	shardCount = preShardCount
 	lruShard := &LRUShard{shards : make([]*lru.Cache,shardCount), shardCount:shardCount}
 	for i := 0 ; i < shardCount ; i++ {
 		lruShard.shards[i], _ = lru.NewWithEvict(shardSize, nil)
