@@ -16,15 +16,18 @@ const cacheSize = allwork * 3
 
 func main(){
 	//lruShardTest()
-	lruTest(1)
-	lruTest(2000)
-	lruTest(4000)
+	for i := 1 ; i <= 4000 ; i += 100 {
+		lruTest(i)
+	}
+	//lruTest(1)
+	//lruTest(2000)
+	//lruTest(4000)
 
 
 
-	shardCountTest(1)
-	shardCountTest(2000)
-	shardCountTest(4000)
+	//shardCountTest(1)
+	//shardCountTest(2000)
+	//shardCountTest(4000)
 }
 
 func parallelTest() {
@@ -111,7 +114,7 @@ func lruShardAddTest(testName string, lru *LRUShard, grNum int) {
 	}
 	sw.Wait()
 	duration := time.Since(start)
-	printResult(testName+"AddShard",lru.shardCount,grNum,int(duration/allwork))
+	printResult(testName+"AddShard",lru.maxShard+1,grNum,int(duration/allwork))
 }
 
 func lruShardGetTest(testName string, lru *LRUShard, grNum int) {
@@ -122,7 +125,7 @@ func lruShardGetTest(testName string, lru *LRUShard, grNum int) {
 	}
 	sw.Wait()
 	duration := time.Since(start)
-	printResult(testName+"GetShard",lru.shardCount,grNum,int(duration/allwork))
+	printResult(testName+"GetShard",lru.maxShard + 1,grNum,int(duration/allwork))
 }
 
 func lruShardAddWork(shardLRU *LRUShard, goNum int) {
@@ -148,7 +151,7 @@ func lruShardGetWork(shardLRU *LRUShard, goNum int) {
 
 type LRUShard struct {
 	shards     []*lru.Cache
-	shardCount int
+	maxShard int
 }
 
 func (s *LRUShard) Add(key, val interface{}) (bool) {
@@ -164,9 +167,9 @@ func (s *LRUShard) Get(key interface{}) (interface{},bool) {
 func (s *LRUShard) getShardIndex(key interface{}) int {
 	switch k := key.(type) {
 	case common.Hash:
-		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) & (s.shardCount - 1)
+		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) & s.maxShard
 	case common.Address:
-		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) & (s.shardCount - 1)
+		return ((int(k[2]) << 16) + (int(k[1]) << 8) + int(k[0])) & s.maxShard
 	default:
 		return 0
 	}
@@ -180,7 +183,7 @@ func InitLruShard(shardCount int, shardSize int) *LRUShard {
 		shardCount = shardCount & (shardCount - 1)
 	}
 	shardCount = preShardCount
-	lruShard := &LRUShard{shards : make([]*lru.Cache,shardCount), shardCount:shardCount}
+	lruShard := &LRUShard{shards : make([]*lru.Cache,shardCount), maxShard:shardCount - 1}
 	for i := 0 ; i < shardCount ; i++ {
 		lruShard.shards[i], _ = lru.NewWithEvict(shardSize, nil)
 	}
