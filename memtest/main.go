@@ -21,7 +21,7 @@ func main(){
 	}
 
 	for i := 1 ; i <= 4000 ; i += 100 {
-		shardCountTest(2)
+		shardCountTest(i)
 	}
 
 	/*
