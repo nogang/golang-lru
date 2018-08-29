@@ -41,7 +41,7 @@ func dataSizeTest() {
 
 func shardCountTest(gonum int) {
 	testName := "shardCountTest"
-	for s := 1 ; s <= 65536 ; s *= 4 {
+	for s := 4 ; s <= 65536 ; s *= 4 {
 		lruShard := InitLruShard(s - 1, cacheSize/(s-1))
 		lruShardAddTest(testName, lruShard, gonum)
 		lruShardGetTest(testName, lruShard, gonum)
