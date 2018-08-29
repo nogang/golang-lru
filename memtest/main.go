@@ -6,7 +6,8 @@ import (
 				"time"
 	"github.com/ground-x/go-gxplatform/common"
 	"sync"
-		)
+	"github.com/nogang/bigcache"
+)
 
 var sw sync.WaitGroup
 
@@ -17,11 +18,11 @@ const cacheSize = allwork * 3
 func main(){
 	//lruShardTest()
 	for i := 1 ; i <= 20 ; i += 1 {
-		shardCountTest(1)
+		bigCountTest(1)
 	}
 
-	for i := 1 ; i <= 100 ; i += 1 {
-		shardCountTest(i)
+	for i := 1 ; i <= 4000 ; i += 100 {
+		bigCountTest(i)
 	}
 
 	/*
@@ -228,6 +229,76 @@ func getValue() []byte {
 func printResult(testName string, shardNum, goroutine, time int) {
 	fmt.Println(testName, "Shards", shardNum, "Goroutine", goroutine, "Time", time)
 }
+
+
+///////////////////////////////////////
+func bigCountTest(gonum int) {
+	testName := "shardCountTest"
+	//for s := 1 ; s <= 65536 ; s *= 4 {
+	s:= 4096
+	bigCache := InitBigCache(s, cacheSize/s)
+	bigAddTest(testName, bigCache, gonum)
+	bigGetTest(testName, bigCache, gonum)
+	//}
+}
+
+func InitBigCache(shards, entriesInWindow int) *bigcache.BigCache {
+	cache, _ := bigcache.NewBigCache(bigcache.Config{
+		Shards:             shards,
+		LifeWindow:         10 * time.Minute,
+		MaxEntriesInWindow: entriesInWindow,
+		MaxEntrySize:       256,
+		Verbose:            false,
+	})
+
+	return cache
+}
+
+func bigAddTest(testName string, bigcache *bigcache.BigCache, grNum int) {
+	start := time.Now()
+	sw.Add(grNum)
+	for i := 0 ; i < grNum; i++ {
+		go bigAddWork(bigcache, grNum)
+	}
+	sw.Wait()
+	duration := time.Since(start)
+	printResult(testName+"AddShard",4096,grNum,int(duration/allwork))
+}
+
+func bigGetTest(testName string, bigcache *bigcache.BigCache, grNum int) {
+	sw.Add(grNum)
+	start := time.Now()
+	for i := 0 ; i < grNum; i++ {
+		go bigGetWork(bigcache, grNum)
+	}
+	sw.Wait()
+	duration := time.Since(start)
+	printResult(testName+"GetShard",4096,grNum,int(duration/allwork))
+}
+
+
+func bigAddWork(big *bigcache.BigCache, goNum int) {
+	defer sw.Done()
+	for i := 0 ; i < allwork/goNum ; i++ {
+		backupKey := getKey(goNum, i)
+		error  := big.Set(string(backupKey[:]), getValue())
+		if error != nil {
+			println("add Error")
+		}
+	}
+}
+
+func bigGetWork(big *bigcache.BigCache, goNum int) {
+	defer sw.Done()
+	for i := 0 ; i < allwork/goNum ; i++ {
+		backupKey := getKey(goNum, i)
+		_, error := big.Get(string(backupKey[:]))
+		if error != nil {
+			println("get Error")
+		}
+	}
+}
+
 /*
 runtime.MemProfileRate=1
 

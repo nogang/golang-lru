@@ -22,25 +22,25 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="8" />
+          <entry key="go" value="9" />
           <entry key="s" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="8" />
+          <entry key="Go" value="9" />
           <entry key="x86 Plan9 Assembly" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="8" />
-          <entry key="go" value="2361" />
+          <entry key="go" value="2652" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="2361" />
+          <entry key="Go" value="2652" />
           <entry key="PLAIN_TEXT" value="8" />
         </counts>
       </usages-collector>
@@ -51,8 +51,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/memtest/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="35" column="2" lean-forward="true" selection-start-line="35" selection-start-column="2" selection-end-line="35" selection-end-column="2" />
+            <state relative-caret-position="108">
+              <caret line="283" column="23" lean-forward="true" selection-start-line="283" selection-start-column="23" selection-end-line="283" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../bigcache/bigcache.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="260">
+              <caret line="96" column="19" selection-start-line="96" selection-start-column="19" selection-end-line="96" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -103,7 +112,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../ground-x/go-gxplatform/common/types.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
+            <state relative-caret-position="-2383">
               <caret line="39" column="5" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
             </state>
           </provider>
@@ -142,10 +151,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="12" />
-    <option name="y" value="-1056" />
+    <option name="y" value="173" />
     <option name="width" value="1920" />
-    <option name="height" value="1057" />
+    <option name="height" value="976" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -193,6 +201,41 @@
               <item name="Go SDK 1.10.3" type="20ee2d1f:SyntheticLibraryElementNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="runtime" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="golang-lru" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="GOPATH &lt;golang-lru&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
+            </path>
+            <path>
+              <item name="golang-lru" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="GOPATH &lt;golang-lru&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="golang-lru" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="GOPATH &lt;golang-lru&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="github.com" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="golang-lru" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="GOPATH &lt;golang-lru&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="github.com" type="462c0819:PsiDirectoryNode" />
+              <item name="nogang" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="golang-lru" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="GOPATH &lt;golang-lru&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="github.com" type="462c0819:PsiDirectoryNode" />
+              <item name="nogang" type="462c0819:PsiDirectoryNode" />
+              <item name="bigcache" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -245,15 +288,14 @@
     </recent_temporary>
   </component>
   <component name="ToolWindowManager">
-    <frame x="12" y="-1056" width="1920" height="1057" extended-state="0" />
-    <editor active="true" />
+    <frame x="0" y="173" width="1920" height="976" extended-state="0" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25239617" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946752" visible="true" weight="0.13782384" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946752" visible="true" weight="0.7251131" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39932126" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -261,7 +303,7 @@
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Terminal" order="9" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5005325" side_tool="true" visible="true" weight="0.13782384" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5005325" side_tool="true" visible="true" weight="0.7251131" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -280,13 +322,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/memtest/main.go</url>
-          <line>124</line>
+          <line>125</line>
           <properties />
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/memtest/main.go</url>
-          <line>129</line>
+          <line>130</line>
           <properties />
           <option name="timeStamp" value="5" />
         </line-breakpoint>
@@ -327,9 +369,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/local/Cellar/go/1.10.3/libexec/src/runtime/alg.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3056" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../../ground-x/go-gxplatform/common/types.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
+        <state relative-caret-position="-2383">
           <caret line="39" column="5" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
         </state>
       </provider>
@@ -341,15 +388,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/Cellar/go/1.10.3/libexec/src/runtime/alg.go">
+    <entry file="file://$PROJECT_DIR$/../bigcache/bigcache.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3056" />
+        <state relative-caret-position="260">
+          <caret line="96" column="19" selection-start-line="96" selection-start-column="19" selection-end-line="96" selection-end-column="19" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/memtest/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="35" column="2" lean-forward="true" selection-start-line="35" selection-start-column="2" selection-end-line="35" selection-end-column="2" />
+        <state relative-caret-position="108">
+          <caret line="283" column="23" lean-forward="true" selection-start-line="283" selection-start-column="23" selection-end-line="283" selection-end-column="23" />
         </state>
       </provider>
     </entry>
