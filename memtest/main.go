@@ -17,10 +17,10 @@ const cacheSize = allwork * 3
 func main(){
 	//lruShardTest()
 	for i := 1 ; i <= 20 ; i += 1 {
-		shardCountTest(2)
+		shardCountTest(1)
 	}
 
-	for i := 1 ; i <= 4000 ; i += 100 {
+	for i := 1 ; i <= 100 ; i += 1 {
 		shardCountTest(i)
 	}
 
