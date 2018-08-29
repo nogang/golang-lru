@@ -17,11 +17,11 @@ const cacheSize = allwork * 3
 func main(){
 	//lruShardTest()
 	for i := 1 ; i <= 20 ; i += 1 {
-		lruTest(2)
+		shardCountTest(2)
 	}
 
 	for i := 1 ; i <= 4000 ; i += 100 {
-		lruTest(i)
+		shardCountTest(2)
 	}
 
 	/*
@@ -59,11 +59,12 @@ func dataSizeTest() {
 
 func shardCountTest(gonum int) {
 	testName := "shardCountTest"
-	for s := 1 ; s <= 65536 ; s *= 4 {
-		lruShard := InitLruShard(s, cacheSize/s)
-		lruShardAddTest(testName, lruShard, gonum)
-		lruShardGetTest(testName, lruShard, gonum)
-	}
+	//for s := 1 ; s <= 65536 ; s *= 4 {
+	s:= 4096
+	lruShard := InitLruShard(s, cacheSize/s)
+	lruShardAddTest(testName, lruShard, gonum)
+	lruShardGetTest(testName, lruShard, gonum)
+	//}
 }
 
 func lruTest(gonum int) {
